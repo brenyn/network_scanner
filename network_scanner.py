@@ -30,8 +30,18 @@ def scan(ip):
 	#scapy.srp returned 2 lists, a list of addresses that answered and a list that did not answer. for this program we're only interested in the addresses that answered
 	answered_list = scapy.srp(arp_request_broadcast, timeout = 1, verbose = False)[0] # srp function will send the packet to broadcast MAC address and check all IPs provided by ip.
 	
-	print("IP\t\t\tMAC Address\n-----------------------------------------")
-	
+	client_list = []
+
 	for answer in answered_list:
-		print (answer[1].psrc+"\t|\t"+answer[1].hwsrc)# each answer contains 2 lists, 1 lists the request made and the second contains the response
-scan("10.0.2.1/24")
+		client_dict = {'ip':answer[1].psrc , 'mac':answer[1].hwsrc}
+		client_list.append(client_dict)
+	return client_list
+
+def print_result(result_list):
+	print("IP\t\t\tMAC")
+	for result in result_list:
+		print(result["ip"] + "\t\t" + result["mac"])
+
+scan_result = scan("10.0.2.1/24")
+
+print_result(scan_result)
